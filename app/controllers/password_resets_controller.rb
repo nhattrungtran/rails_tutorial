@@ -1,4 +1,4 @@
-class PasswordResetsController < ApplicationController
+class PasswordResetsConadd_index :microposts, [:user_id, :created_at]troller < ApplicationController
   before_action :get_user,   only: [:edit, :update]
   before_action :valid_user, only: [:edit, :update]
   before_action :check_expiration, only: [:edit, :update]    # Case (1)
@@ -18,7 +18,7 @@ class PasswordResetsController < ApplicationController
       render 'new'
     end
   end
-
+add_index :microposts, [:user_id, :created_at]
   def edit
   end
 
