@@ -18,7 +18,7 @@ class PasswordResetsController < ApplicationController
       render 'new'
     end
   end
-
+add_index :microposts, [:user_id, :created_at]
   def edit
   end
 
