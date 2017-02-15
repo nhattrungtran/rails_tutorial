@@ -18,6 +18,12 @@
 	  </div>
   </div>
 <% else %>
+<div class="center">
+  <h1><b>Tài khoản: diemthao@gmail.com</b></h1>
+  <h1><b>Mật khẩu: 123456</b></h1>  
+</div>
+
+
 <div class="center jumbotron">
   <h1>Welcome to the Sample App</h1>
 
@@ -30,7 +36,8 @@
   <%= link_to "Sign up now!", signup_path, class: "btn btn-lg btn-primary" %>
 </div>
 
+<div class="center">
 <%= link_to image_tag("rails.png", alt: "Rails logo"),
-            'http://rubyonrails.org/' %>
-<h1>Home day ne</h1>
+            'http://rubyonrails.org/' %>  
+</div>
 <% end %>
