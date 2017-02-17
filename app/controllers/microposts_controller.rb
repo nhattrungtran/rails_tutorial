@@ -2,6 +2,10 @@ class MicropostsController < ApplicationController
   before_action :logged_in_user, only: [:create, :destroy]
   before_action :correct_user,   only: :destroy
 
+  def index
+    @feed_items = Micropost.all.paginate(page: params[:page])
+  end
+
   def create
     @micropost = current_user.microposts.build(micropost_params)
     if @micropost.save
@@ -14,6 +18,20 @@ class MicropostsController < ApplicationController
     end
   end
 
+  def edit
+    @micropost = Micropost.find(params[:id])
+  end
+
+  def update
+    @micropost = Micropost.find(params[:id])
+    if @micropost.update_attributes(micropost_params)
+      flash[:success] = "Cập nhật thành công!"
+      redirect_to(root_url)
+    else
+      render "edit"
+    end
+  end
+
   def destroy
     @micropost.destroy
     flash[:success] = "Micropost deleted"
@@ -21,7 +39,10 @@ class MicropostsController < ApplicationController
   end
 
   def show
-    @current_micropost = current_user.microposts.find_by(id: params[:id])
+    @current_micropost = Micropost.find_by(id: params[:id])
+    @comment = Comment.new
+
+    @comments = @current_micropost.comments.paginate(page: params[:page])
   end
 
   private

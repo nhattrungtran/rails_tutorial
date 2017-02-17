@@ -1,10 +1,11 @@
 class UsersController < ApplicationController
-before_action :logged_in_user, only: [:index, :edit, :update, :destroy,
+  before_action :logged_in_user, only: [:index, :edit, :update, :destroy,
                                         :following, :followers]
   before_action :correct_user, only: [:edit, :update]
   before_action :admin_user,     only: :destroy
 
   def index
+    @user  = current_user
     @users = User.paginate(page: params[:page])
   end
 
@@ -25,6 +26,7 @@ before_action :logged_in_user, only: [:index, :edit, :update, :destroy,
       # @user.send_activation_email
       # flash[:info] = "Please check your email to activate your account."
       # redirect_to root_url
+      log_in @user
       flash[:success] = "Welcome to the Sample App!"
       redirect_to @user
     else
@@ -50,7 +52,7 @@ before_action :logged_in_user, only: [:index, :edit, :update, :destroy,
 
   def destroy
     User.find(params[:id]).destroy
-    flash[:success] = "Xoa thanh vien thanh cong"
+    flash[:success] = "Xóa thành viên thành công"
     redirect_to users_url
   end
 
@@ -72,7 +74,7 @@ before_action :logged_in_user, only: [:index, :edit, :update, :destroy,
 
     def user_params
       params.require(:user).permit(:name, :email, :password,
-                                   :password_confirmation)
+                                   :password_confirmation, :avatar)
     end
 
     # Before filters

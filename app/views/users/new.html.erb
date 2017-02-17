@@ -3,7 +3,7 @@
 
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
-    <%= form_for(@user, url: signup_path) do |f| %>
+    <%= form_for(@user, url: signup_path, html: { multipart: true }) do |f| %>
       <%= render 'shared/error_messages', object: f.object %>
       <%= f.label :name %>
       <%= f.text_field :name, class: 'form_control' %>
@@ -14,9 +14,11 @@
       <%= f.label :password %>
       <%= f.password_field :password, class: 'form_control' %>
 
-      <%= f.label :password_confirmation, "Confirmation" %>
+      <%= f.label :password_confirmation, "Confirmation" %>t
       <%= f.password_field :password_confirmation, class: 'form_control' %>
-
+      <span class="picture">
+        <%= f.file_field :avatar, accept: 'image/jpeg,image/gif,image/png' %>
+      </span>
       <%= f.submit "Create my account", class: "btn btn-primary" %>
     <% end %>
   </div>

@@ -1,15 +1,29 @@
 <li id="micropost-<%= micropost.id %>">
-  <%= link_to gravatar_for(micropost.user, size: 50), micropost.user %>
-  <span class="user"><%= link_to micropost.user.name, micropost.user %></span>
-  <span class="content">
-  	<%= micropost.content %>
-  	<%= image_tag micropost.picture.url if micropost.picture? %>
-  </span>
-
+  <div class="media">
+    <div class="media-left">
+      <% if micropost.user.avatar? %>
+        <%= link_to image_tag micropost.user.avatar.url, size: 50, class: 'img-rounded' %>
+      <% else %>
+        <%= link_to gravatar_for(micropost.user, size: 50), micropost.user %>
+      <% end %>
+    </div>
+    <div class="media-body">
+      <h4 class="media-heading"><%= link_to micropost.user.name, micropost.user %></h4>
+      <div class="well well-sm">
+        <p>
+          <%= micropost.content %>
+          <%= image_tag micropost.picture.url, size: 120, class: 'img-thumbnail' if micropost.picture? %>        
+        </p>
+      </div>
+    </div>
+  </div>
   <span class="timestamp">
     Posted <%= time_ago_in_words(micropost.created_at) %> ago.
-      <%= link_to "delete", micropost, method: :delete,
+    <%= link_to "View", micropost_path(micropost) %>
+    <%if micropost.user == current_user%>
+      <%= link_to "Edit", edit_micropost_path(micropost) %>
+      <%= link_to "Delete", micropost, method: :delete,
                                        data: { confirm: "You sure?" } %>
-      <%= link_to "view", micropost_path(micropost) %>
+    <% end %>
   </span>
 </li>

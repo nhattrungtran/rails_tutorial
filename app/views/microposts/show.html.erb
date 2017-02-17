@@ -1,2 +1,95 @@
 <% provide(:title, 'Micropost View') %>
-<h1><%= @current_micropost.content %></h1>
+<div class="col-md-8">
+	<div class="media">
+	    <div class="media-left">
+	      <% if @current_micropost.user.avatar? %>
+	        <%= link_to image_tag @current_micropost.user.avatar.url, size: 50, class: 'img-rounded' %>
+	      <% else %>
+	        <%= link_to gravatar_for(@current_micropost.user, size: 50), @current_micropost.user %>
+	      <% end %>
+	    </div>
+	    <div class="media-body">
+	      <h4 class="media-heading"><%= link_to @current_micropost.user.name, @current_micropost.user %></h4>
+	      <div class="well well-sm">
+	        <p>
+	          <%= @current_micropost.content %> <br>
+	          <%= image_tag @current_micropost.picture.url, size: 120, class: 'img-thumbnail' if @current_micropost.picture? %>        
+	        </p>
+	      </div>
+	    </div>
+	</div>
+	<span class="timestamp">
+		Posted <%= time_ago_in_words(@current_micropost.created_at) %> ago.	
+		<%if @current_micropost.user == current_user%>
+		  <%= link_to "Edit", edit_micropost_path(@current_micropost) %>
+		  <%= link_to "Delete", @current_micropost, method: :delete,
+		                                   data: { confirm: "You sure?" } %>
+		<% end %>
+	</span>
+
+	<% if logged_in? %>
+	<%= form_for(@comment) do |f| %>
+	  <%= render 'shared/error_messages', object: f.object %>
+	  <div class="field">
+	    <%= f.text_area :content, placeholder: "Compose new comment...", :required => true %>
+	  </div>
+	  <input type="hidden" name="comment[micropost_id]" value='<%= @current_micropost.id%>'>
+	  <%= f.submit "Comment", class: "btn btn-primary" %>
+	<% end %>
+	<% else %>
+	<div class="alert alert-warning" role="alert"><b>Mời bạn đăng nhập để bình luận bài viết.</b></div>
+	<% end %>
+
+	<div class="col-md-8">
+
+	  <ol class="microposts">
+	  	<% @comments.each do |com| %>
+			<li id="micropost%>">
+
+		      <% if com.user.avatar? %>
+		        <%= link_to image_tag com.user.avatar.url, size: 50, class: 'img-rounded' %>
+		      <% else %>
+		        <%= link_to gravatar_for(com.user, size: 50), com.user %>
+		      <% end %>
+
+			  <span class="user"><%= link_to com.user.name, com.user %></span>
+			  <span class="content">
+			    <%= com.content %>
+			    <%= image_tag com.micropost.picture.url if com.micropost.picture? %>
+			  </span>
+
+			  <span class="timestamp">
+			  	Comment <%= time_ago_in_words(com.created_at) %> ago.
+			  	<% if current_user?(com.user) && logged_in? %>  	
+			      <%= link_to "Delete", com, method: :delete,
+			                                       data: { confirm: "You sure?" } %>
+			      <a class="click_edit" href="#" id="<%= com.id %>" >Edit</a>
+
+				  <%= form_for com, method: :patch do |f| %>
+				    <%= render 'shared/error_messages', object: f.object %>
+				    <!-- <input type="hidden" name="_method" value="patch"> -->
+				    <div class="field">
+				      <%= f.text_area :content, placeholder: "Edit old comment...", :required => true %>
+				    </div>
+				    <input type="hidden" name="comment[micropost_id]" value='<%= @current_micropost.id%>'>
+				    <%= f.submit "Edit", class: "btn btn-primary" %>
+				  <% end %>
+				<% end %>
+			  </span>
+
+			</li>
+		<% end %>
+	  </ol>
+	  <%= will_paginate @comments %>
+	</div>
+</div>
+<script  type="text/javascript" charset="utf-8" async defer>
+	$(document).ready(function(){
+		$(".edit_comment").hide();
+		$(".click_edit").click(function(e) {
+			e.preventDefault();
+			cmt_id = $(this).attr("id");
+			$("#edit_comment_"+cmt_id).fadeToggle(500);
+		});
+	});
+</script>
